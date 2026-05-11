@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f0f4ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="AdBill">
+<link rel="manifest" href="#" id="manifest-link">
+<title>AdBill – ফেসবুক অ্যাড বিলিং</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4ff;
+    --bg2: #e8eeff;
+    --card: #ffffff;
+    --card2: #f7f9ff;
+    --border: #dde4f7;
+    --primary: #3d5af1;
+    --primary-light: #eef0ff;
+    --primary-dark: #2a3fc2;
+    --accent: #ff6b35;
+    --accent2: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --text: #1a1f3c;
+    --text2: #4a5080;
+    --text3: #8890b5;
+    --shadow: 0 2px 12px rgba(61,90,241,0.08);
+    --shadow-md: 0 4px 24px rgba(61,90,241,0.13);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+  /* HEADER */
+  .app-header {
+    background: var(--primary);
+    color: white;
+    padding: 16px 20px 12px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 16px rgba(61,90,241,0.25);
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .app-logo { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
+  .app-logo span { color: #a5b4ff; }
+  .header-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    background: rgba(255,255,255,0.18);
+    border: none; border-radius: 8px;
+    color: white; padding: 7px 12px; cursor: pointer;
+    font-size: 0.85rem; font-weight: 500;
+    transition: background 0.2s;
+    font-family: inherit;
+  }
+  .icon-btn:hover { background: rgba(255,255,255,0.28); }
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex; gap: 4px;
+    background: var(--card);
+    padding: 6px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky; top: 58px; z-index: 99;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    flex: 0 0 auto;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .nav-tab.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 600;
+  }
+  .nav-tab:hover:not(.active) { background: var(--bg2); }
+  /* PAGES */
+  .page { display: none; padding: 16px; animation: fadeIn 0.2s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+  }
+  .card-title {
+    font-size: 0.95rem; font-weight: 700;
+    color: var(--text); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .ico { font-size: 1.1rem; }
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-grid.full { grid-template-columns: 1fr; }
+  @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group label { font-size: 0.8rem; font-weight: 600; color: var(--text2); }
+  .form-group input, .form-group select, .form-group textarea {
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--card2);
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    transition: border 0.18s, box-shadow 0.18s;
+    outline: none;
+    width: 100%;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(61,90,241,0.1);
+  }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+  /* BUTTONS */
+  .btn {
+    padding: 11px 20px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); box-shadow: var(--shadow-md); }
+  .btn-success { background: var(--accent2); color: white; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-warning { background: var(--warning); color: white; }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text2);
+  }
+  .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+  .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+  .btn-full { width: 100%; justify-content: center; }
+  /* BADGES */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .badge-paid { background: #dcfce7; color: #16a34a; }
+  .badge-due { background: #fee2e2; color: #dc2626; }
+  .badge-partial { background: #fef3c7; color: #d97706; }
+  .badge-active { background: #dbeafe; color: #2563eb; }
+  .badge-ended { background: #f1f5f9; color: #64748b; }
+  .badge-refund { background: #ede9fe; color: #7c3aed; }
+  /* AD LIST ITEM */
+  .ad-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.18s;
+  }
+  .ad-item:hover { box-shadow: var(--shadow-md); }
+  .ad-item-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .ad-item-name { font-weight: 700; font-size: 0.97rem; color: var(--text); }
+  .ad-item-client { font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-top: 2px; }
+  .ad-item-meta {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    font-size: 0.8rem; color: var(--text2);
+    margin-bottom: 10px;
+  }
+  .meta-chip {
+    background: var(--bg2);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.78rem;
+  }
+  .ad-item-amounts {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    padding: 10px;
+    background: var(--card2);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+  }
+  .amount-block { flex: 1; min-width: 80px; }
+  .amount-label { font-size: 0.72rem; color: var(--text3); font-weight: 600; }
+  .amount-value {
+    font-size: 1rem; font-weight: 700; color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .amount-value.red { color: var(--danger); }
+  .amount-value.green { color: var(--accent2); }
+  .amount-value.orange { color: var(--warning); }
+  .ad-item-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  /* SUMMARY CARDS */
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  @media (min-width: 600px) { .summary-grid { grid-template-columns: repeat(4, 1fr); } }
+  .summary-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .summary-card .s-label { font-size: 0.75rem; color: var(--text3); font-weight: 600; margin-bottom: 6px; }
+  .summary-card .s-value {
+    font-size: 1.3rem; font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  /* NOTIFICATION */
+  .notif-banner {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+  }
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 14px; align-items: center;
+  }
+  .filter-bar select, .filter-bar input {
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.85rem;
+    background: var(--card);
+    color: var(--text);
+    outline: none;
+    flex: 1; min-width: 130px;
+  }
+  /* BILL PREVIEW */
+  .bill-preview {
+    background: white;
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+    padding: 24px;
+    font-size: 0.88rem;
+  }
+  .bill-header { text-align: center; margin-bottom: 20px; }
+  .bill-title { font-size: 1.3rem; font-weight: 800; color: var(--primary); }
+  .bill-sub { color: var(--text3); font-size: 0.8rem; }
+  .bill-table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  .bill-table th {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 0.78rem;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 700;
+  }
+  .bill-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .bill-table tr:last-child td { border-bottom: none; }
+  .bill-total {
+    font-size: 1.1rem; font-weight: 800;
+    text-align: right;
+    padding: 12px 10px;
+    border-top: 2px solid var(--primary);
+    color: var(--primary);
+  }
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(10,15,40,0.45);
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+  .modal {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    width: 100%; max-width: 520px;
+    box-shadow: 0 20px 60px rgba(61,90,241,0.18);
+    margin: auto;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: none; } }
+  .modal-title {
+    font-size: 1.05rem; font-weight: 700;
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-close {
+    background: none; border: none; cursor: pointer;
+    font-size: 1.3rem; color: var(--text3); line-height: 1;
+  }
+  /* TOAST */
+  .toast-container {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+    z-index: 9999; display: flex; flex-direction: column; gap: 6px; align-items: center;
+  }
+  .toast {
+    background: #1a1f3c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    animation: toastIn 0.2s ease;
+    white-space: nowrap;
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 200;
+    box-shadow: 0 -2px 16px rgba(61,90,241,0.08);
+  }
+  .bottom-nav-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px 4px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.68rem;
+    color: var(--text3);
+    font-weight: 500;
+    transition: color 0.18s;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .bottom-nav-btn .nav-ico { font-size: 1.3rem; }
+  .bottom-nav-btn.active { color: var(--primary); }
+  .bottom-nav-btn.active .nav-ico { transform: scale(1.1); }
+  /* SECTION HEADER */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title { font-size: 1rem; font-weight: 800; color: var(--text); }
+  /* DOLLAR PURCHASE */
+  .dollar-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: var(--shadow);
+  }
+  .dollar-icon { font-size: 1.8rem; }
+  .dollar-info { flex: 1; }
+  .dollar-main { font-weight: 700; font-size: 0.95rem; }
+  .dollar-sub { font-size: 0.78rem; color: var(--text3); margin-top: 2px; }
+  .dollar-amount { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 1rem; color: var(--accent2); }
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center; padding: 40px 20px;
+    color: var(--text3);
+  }
+  .empty-state .empty-ico { font-size: 3rem; margin-bottom: 10px; }
+  .empty-state p { font-size: 0.9rem; }
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+  /* INLINE INFO */
+  .info-row {
+    display: flex; justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--bg2);
+    font-size: 0.85rem;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .label { color: var(--text2); }
+  .info-row .value { font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+  /* PREVIOUS DUE WARNING */
+  .prev-due-warning {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-left: 4px solid var(--warning);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    color: #92400e;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="header-top">
+    <div class="app-logo">Ad<span>Bill</span> 📊</div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="showPage('add-ad'); showTab('add-ad')">+ নতুন অ্যাড</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOP TABS (desktop) -->
+<div class="nav-tabs" id="top-tabs">
+  <button class="nav-tab active" data-page="dashboard" onclick="showPage('dashboard');setTab(this)">📊 ড্যাশবোর্ড</button>
+  <button class="nav-tab" data-page="ads" onclick="showPage('ads');setTab(this)">📋 অ্যাড লিস্ট</button>
+  <button class="nav-tab" data-page="add-ad" onclick="showPage('add-ad');setTab(this)">➕ নতুন অ্যাড</button>
+  <button class="nav-tab" data-page="clients" onclick="showPage('clients');setTab(this)">👥 ক্লায়েন্ট</button>
+  <button class="nav-tab" data-page="dollars" onclick="showPage('dollars');setTab(this)">💵 ডলার কেনা</button>
+  <button class="nav-tab" data-page="reports" onclick="showPage('reports');setTab(this)">📈 রিপোর্ট</button>
+  <button class="nav-tab" data-page="bill" onclick="showPage('bill');setTab(this)">🧾 বিল</button>
+</div>
+
+<!-- PAGES -->
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div id="notif-area"></div>
+  <div class="summary-grid" id="summary-grid"></div>
+  <div class="card">
+    <div class="card-title"><span class="ico">🔥</span> সক্রিয় অ্যাড</div>
+    <div id="active-ads-list"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="ico">⚠️</span> বকেয়া পেমেন্ট (ডিউ)</div>
+    <div id="due-ads-list"></div>
+  </div>
+</div>
+
+<!-- ADS LIST -->
+<div class="page" id="page-ads">
+  <div class="filter-bar">
+    <select id="filter-client" onchange="renderAds()">
+      <option value="">সব ক্লায়েন্ট</option>
+    </select>
+    <select id="filter-status" onchange="renderAds()">
+      <option value="">সব স্ট্যাটাস</option>
+      <option value="active">সক্রিয়</option>
+      <option value="ended">শেষ</option>
+    </select>
+    <select id="filter-pay" onchange="renderAds()">
+      <option value="">সব পেমেন্ট</option>
+      <option value="paid">পেইড</option>
+      <option value="due">ডিউ</option>
+      <option value="partial">পার্শিয়াল</option>
+    </select>
+  </div>
+  <div id="ads-list-container"></div>
+</div>
+
+<!-- ADD AD -->
+<div class="page" id="page-add-ad">
+  <div class="card">
+    <div class="card-title"><span class="ico">➕</span> নতুন অ্যাড যোগ করুন</div>
+    <div id="prev-due-notice"></div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>ক্লায়েন্ট / পেজ নেম *</label>
+        <input type="text" id="f-client" list="client-list" placeholder="ক্লায়েন্টের নাম" oninput="checkPrevDue()">
+        <datalist id="client-list"></datalist>
+      </div>
+      <div class="form-group">
+        <label>ক্যাম্পেইন নেম *</label>
+        <input type="text" id="f-campaign" placeholder="ক্যাম্পেইনের নাম">
+      </div>
+      <div class="form-group">
+        <label>ক্যাম্পেইন ধরন</label>
+        <select id="f-type">
+          <option value="Sales">💰 Sales (সেল)</option>
+          <option value="Engagement">❤️ Engagement (এনগেজমেন্ট)</option>
+          <option value="Page Like">👍 Page Like</option>
+          <option value="Traffic">🌐 Traffic</option>
+          <option value="Reach">📣 Reach</option>
+          <option value="Lead Generation">📧 Lead Generation</option>
+          <option value="Video Views">🎥 Video Views</option>
+          <option value="Brand Awareness">🏷️ Brand Awareness</option>
+          <option value="App Installs">📱 App Installs</option>
+          <option value="Messages">💬 Messages</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>শুরুর তারিখ *</label>
+        <input type="date" id="f-start">
+      </div>
+      <div class="form-group">
+        <label>কতদিন চলবে</label>
+        <input type="number" id="f-days" placeholder="দিনের সংখ্যা" oninput="calcEndDate()">
+      </div>
+      <div class="form-group">
+        <label>শেষের তারিখ</label>
+        <input type="date" id="f-end">
+      </div>
+      <div class="form-group">
+        <label>পার ডে বাজেট ($)</label>
+        <input type="number" id="f-daily" placeholder="যেমন: 5" step="0.01" oninput="calcTotal()">
+      </div>
+      <div class="form-group">
+        <label>ডলার রেট (৳)</label>
+        <input type="number" id="f-rate" placeholder="যেমন: 120" step="0.01" oninput="calcTotal()">
+      </div>
+      <div class="form-group">
+        <label>মোবাইল ব্যাংকিং ফী (%)</label>
+        <input type="number" id="f-fee" placeholder="যেমন: 1.5" step="0.01" value="0" oninput="calcTotal()">
+      </div>
+      <div class="form-group">
+        <label>পেমেন্ট পদ্ধতি (ক্লায়েন্ট)</label>
+        <select id="f-pay-method">
+          <option value="bKash">bKash</option>
+          <option value="Nagad">Nagad</option>
+          <option value="Rocket">Rocket</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+          <option value="Cash">Cash</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <!-- CALC PREVIEW -->
+    <div class="card" style="margin-top:12px; background: var(--primary-light); border-color: var(--primary);">
+      <div class="card-title" style="color:var(--primary); font-size:0.88rem;">💡 হিসাব প্রিভিউ</div>
+      <div class="info-row"><span class="label">মোট ডলার</span><span class="value" id="calc-usd">—</span></div>
+      <div class="info-row"><span class="label">মোট টাকা (রেট ছাড়া)</span><span class="value" id="calc-bdt">—</span></div>
+      <div class="info-row"><span class="label">মোবাইল ব্যাংকিং ফী</span><span class="value" id="calc-fee">—</span></div>
+      <div class="info-row"><span class="label">আগের বকেয়া</span><span class="value" id="calc-prevdue">—</span></div>
+      <div class="info-row" style="border-top: 2px solid var(--primary); margin-top:4px; padding-top:8px;">
+        <span class="label" style="font-weight:800; color:var(--primary);">মোট বিল</span>
+        <span class="value" style="color:var(--primary); font-size:1rem;" id="calc-total">—</span>
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label>পেইড এমাউন্ট (৳) — শূন্য = ডিউ</label>
+      <input type="number" id="f-paid" placeholder="0" step="0.01" value="0">
+    </div>
+    <div class="form-group">
+      <label>নোট (ঐচ্ছিক)</label>
+      <textarea id="f-note" placeholder="যেকোনো মন্তব্য..."></textarea>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:14px;">
+      <button class="btn btn-primary btn-full" onclick="saveAd()">✅ অ্যাড সেভ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENTS -->
+<div class="page" id="page-clients">
+  <div class="section-header">
+    <div class="section-title">👥 ক্লায়েন্ট সমূহ</div>
+  </div>
+  <div id="clients-list"></div>
+</div>
+
+<!-- DOLLARS -->
+<div class="page" id="page-dollars">
+  <div class="section-header">
+    <div class="section-title">💵 ডলার কেনার রেকর্ড</div>
+    <button class="btn btn-primary btn-sm" onclick="openDollarModal()">+ যোগ করুন</button>
+  </div>
+  <div id="dollars-list"></div>
+</div>
+
+<!-- REPORTS -->
+<div class="page" id="page-reports">
+  <div class="summary-grid" id="report-summary"></div>
+  <div class="card">
+    <div class="card-title"><span class="ico">📋</span> ক্লায়েন্টওয়ারি রিপোর্ট</div>
+    <div id="client-report"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="ico">↩️</span> রিফান্ড রেকর্ড</div>
+    <div id="refund-list"></div>
+    <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="openRefundModal()">+ রিফান্ড যোগ করুন</button>
+  </div>
+</div>
+
+<!-- BILL -->
+<div class="page" id="page-bill">
+  <div class="card">
+    <div class="card-title"><span class="ico">🧾</span> বিল জেনারেট করুন</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>ক্লায়েন্ট নির্বাচন করুন</label>
+        <select id="bill-client" onchange="updateBillSelect()">
+          <option value="">-- ক্লায়েন্ট বেছে নিন --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>অ্যাড নির্বাচন করুন</label>
+        <select id="bill-ad">
+          <option value="">-- অ্যাড বেছে নিন --</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+      <button class="btn btn-primary" onclick="generateBill()">🧾 বিল তৈরি করুন</button>
+      <button class="btn btn-success" onclick="shareBill('whatsapp')">💬 WhatsApp-এ পাঠান</button>
+      <button class="btn btn-outline" onclick="shareBill('messenger')">📘 Messenger-এ পাঠান</button>
+      <button class="btn btn-outline" onclick="copyBill()">📋 কপি করুন</button>
+    </div>
+  </div>
+  <div id="bill-preview-area"></div>
+</div>
+
+<!-- MODALS -->
+
+<!-- Payment Modal -->
+<div class="modal-overlay" id="pay-modal">
+  <div class="modal">
+    <div class="modal-title">
+      💳 পেমেন্ট রেকর্ড
+      <button class="modal-close" onclick="closeModal('pay-modal')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>পেইড এমাউন্ট (৳)</label>
+      <input type="number" id="pay-amount" placeholder="পরিমাণ" step="0.01">
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>পেমেন্ট পদ্ধতি</label>
+      <select id="pay-method">
+        <option value="bKash">bKash</option>
+        <option value="Nagad">Nagad</option>
+        <option value="Rocket">Rocket</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+        <option value="Cash">Cash</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <input type="hidden" id="pay-ad-id">
+    <button class="btn btn-success btn-full" onclick="recordPayment()">✅ পেমেন্ট সেভ করুন</button>
+  </div>
+</div>
+
+<!-- Dollar Modal -->
+<div class="modal-overlay" id="dollar-modal">
+  <div class="modal">
+    <div class="modal-title">
+      💵 ডলার কেনার তথ্য
+      <button class="modal-close" onclick="closeModal('dollar-modal')">✕</button>
+    </div>
+    <div class="form-grid form-full">
+      <div class="form-group">
+        <label>কত ডলার কিনেছেন ($)</label>
+        <input type="number" id="d-amount" placeholder="যেমন: 50" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>রেট (৳ প্রতি $)</label>
+        <input type="number" id="d-rate" placeholder="যেমন: 120" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>তারিখ</label>
+        <input type="date" id="d-date">
+      </div>
+      <div class="form-group">
+        <label>কার কাছ থেকে কিনেছেন</label>
+        <input type="text" id="d-from" placeholder="নাম বা প্রতিষ্ঠান">
+      </div>
+      <div class="form-group">
+        <label>পেমেন্ট পদ্ধতি</label>
+        <select id="d-method">
+          <option value="bKash">bKash</option>
+          <option value="Nagad">Nagad</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+          <option value="Cash">Cash</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>নোট</label>
+        <input type="text" id="d-note" placeholder="ঐচ্ছিক">
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-top:12px;" onclick="saveDollar()">💾 সেভ করুন</button>
+  </div>
+</div>
+
+<!-- Refund Modal -->
+<div class="modal-overlay" id="refund-modal">
+  <div class="modal">
+    <div class="modal-title">
+      ↩️ রিফান্ড রেকর্ড
+      <button class="modal-close" onclick="closeModal('refund-modal')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:10px;">
+      <label>ক্লায়েন্ট</label>
+      <input type="text" id="r-client" placeholder="ক্লায়েন্ট নাম">
+    </div>
+    <div class="form-group" style="margin-bottom:10px;">
+      <label>রিফান্ড এমাউন্ট (৳)</label>
+      <input type="number" id="r-amount" placeholder="পরিমাণ" step="0.01">
+    </div>
+    <div class="form-group" style="margin-bottom:10px;">
+      <label>কারণ</label>
+      <input type="text" id="r-reason" placeholder="রিফান্ডের কারণ">
+    </div>
+    <div class="form-group" style="margin-bottom:10px;">
+      <label>তারিখ</label>
+      <input type="date" id="r-date">
+    </div>
+    <button class="btn btn-warning btn-full" onclick="saveRefund()">💾 রিফান্ড সেভ করুন</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="bottom-nav-btn active" data-page="dashboard" onclick="showPage('dashboard');setBottomNav(this)">
+    <span class="nav-ico">📊</span>হোম
+  </button>
+  <button class="bottom-nav-btn" data-page="ads" onclick="showPage('ads');setBottomNav(this)">
+    <span class="nav-ico">📋</span>অ্যাড
+  </button>
+  <button class="bottom-nav-btn" data-page="add-ad" onclick="showPage('add-ad');setBottomNav(this)">
+    <span class="nav-ico">➕</span>নতুন
+  </button>
+  <button class="bottom-nav-btn" data-page="dollars" onclick="showPage('dollars');setBottomNav(this)">
+    <span class="nav-ico">💵</span>ডলার
+  </button>
+  <button class="bottom-nav-btn" data-page="bill" onclick="showPage('bill');setBottomNav(this)">
+    <span class="nav-ico">🧾</span>বিল
+  </button>
+</div>
+
+<script>
+// ==================== DATA ====================
+const DB = {
+  get ads() { return JSON.parse(localStorage.getItem('adbill_ads') || '[]'); },
+  set ads(v) { localStorage.setItem('adbill_ads', JSON.stringify(v)); },
+  get dollars() { return JSON.parse(localStorage.getItem('adbill_dollars') || '[]'); },
+  set dollars(v) { localStorage.setItem('adbill_dollars', JSON.stringify(v)); },
+  get refunds() { return JSON.parse(localStorage.getItem('adbill_refunds') || '[]'); },
+  set refunds(v) { localStorage.setItem('adbill_refunds', JSON.stringify(v)); },
+};
+
+// ==================== NAVIGATION ====================
+let currentPage = 'dashboard';
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  currentPage = page;
+  // sync both navs
+  document.querySelectorAll('[data-page]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.page === page);
+  });
+  renderPage(page);
+}
+function setTab(btn) {}
+function setBottomNav(btn) {}
+function showTab(page) { showPage(page); }
+
+function renderPage(page) {
+  if (page === 'dashboard') renderDashboard();
+  else if (page === 'ads') renderAds();
+  else if (page === 'clients') renderClients();
+  else if (page === 'dollars') renderDollars();
+  else if (page === 'reports') renderReports();
+  else if (page === 'add-ad') setupAddForm();
+  else if (page === 'bill') setupBillPage();
+}
+
+// ==================== FORM LOGIC ====================
+function setupAddForm() {
+  const today = new Date().toISOString().split('T')[0];
+  if (!document.getElementById('f-start').value) {
+    document.getElementById('f-start').value = today;
+  }
+  updateClientDatalist();
+  document.getElementById('prev-due-notice').innerHTML = '';
+}
+
+function updateClientDatalist() {
+  const ads = DB.ads;
+  const clients = [...new Set(ads.map(a => a.client))];
+  const dl = document.getElementById('client-list');
+  dl.innerHTML = clients.map(c => `<option value="${c}">`).join('');
+}
+
+function calcEndDate() {
+  const start = document.getElementById('f-start').value;
+  const days = parseInt(document.getElementById('f-days').value);
+  if (start && days > 0) {
+    const end = new Date(start);
+    end.setDate(end.getDate() + days - 1);
+    document.getElementById('f-end').value = end.toISOString().split('T')[0];
+  }
+  calcTotal();
+}
+
+function calcTotal() {
+  const days = parseInt(document.getElementById('f-days').value) || 0;
+  const daily = parseFloat(document.getElementById('f-daily').value) || 0;
+  const rate = parseFloat(document.getElementById('f-rate').value) || 0;
+  const feeP = parseFloat(document.getElementById('f-fee').value) || 0;
+  const client = document.getElementById('f-client').value.trim();
+
+  const usd = days * daily;
+  const bdt = usd * rate;
+  const fee = bdt * feeP / 100;
+  const prevDue = getClientDue(client);
+  const total = bdt + fee + prevDue;
+
+  document.getElementById('calc-usd').textContent = usd ? `$${usd.toFixed(2)}` : '—';
+  document.getElementById('calc-bdt').textContent = bdt ? `৳${bdt.toFixed(2)}` : '—';
+  document.getElementById('calc-fee').textContent = fee ? `৳${fee.toFixed(2)}` : '—';
+  document.getElementById('calc-prevdue').textContent = prevDue ? `৳${prevDue.toFixed(2)}` : '—';
+  document.getElementById('calc-total').textContent = total ? `৳${total.toFixed(2)}` : '—';
+}
+
+function getClientDue(client) {
+  if (!client) return 0;
+  const ads = DB.ads.filter(a => a.client.toLowerCase() === client.toLowerCase());
+  return ads.reduce((sum, a) => sum + (a.totalBDT - (a.paidBDT || 0)), 0);
+}
+
+function checkPrevDue() {
+  const client = document.getElementById('f-client').value.trim();
+  const due = getClientDue(client);
+  const notice = document.getElementById('prev-due-notice');
+  if (due > 0 && client) {
+    notice.innerHTML = `<div class="prev-due-warning">⚠️ <strong>${client}</strong>-এর আগের বকেয়া আছে: <strong>৳${due.toFixed(2)}</strong> — এই বিলে যোগ হবে।</div>`;
+  } else {
+    notice.innerHTML = '';
+  }
+  calcTotal();
+}
+
+function saveAd() {
+  const client = document.getElementById('f-client').value.trim();
+  const campaign = document.getElementById('f-campaign').value.trim();
+  const type = document.getElementById('f-type').value;
+  const start = document.getElementById('f-start').value;
+  const end = document.getElementById('f-end').value;
+  const days = parseInt(document.getElementById('f-days').value) || 0;
+  const daily = parseFloat(document.getElementById('f-daily').value) || 0;
+  const rate = parseFloat(document.getElementById('f-rate').value) || 0;
+  const feeP = parseFloat(document.getElementById('f-fee').value) || 0;
+  const paidInput = parseFloat(document.getElementById('f-paid').value) || 0;
+  const note = document.getElementById('f-note').value;
+  const payMethod = document.getElementById('f-pay-method').value;
+
+  if (!client || !campaign || !start || !end || !daily || !rate) {
+    toast('❗ সব বাধ্যতামূলক ফিল্ড পূরণ করুন', 'warn');
+    return;
+  }
+
+  const usd = days * daily;
+  const bdt = usd * rate;
+  const fee = bdt * feeP / 100;
+  const prevDue = getClientDue(client);
+  const totalBDT = bdt + fee + prevDue;
+
+  const ad = {
+    id: Date.now().toString(),
+    client, campaign, type, start, end, days,
+    dailyUSD: daily, rate, feePercent: feeP,
+    totalUSD: usd, totalBDT,
+    paidBDT: paidInput,
+    note, payMethod,
+    prevDueIncluded: prevDue,
+    status: isEnded(end) ? 'ended' : 'active',
+    createdAt: new Date().toISOString(),
+    payments: paidInput > 0 ? [{amount: paidInput, method: payMethod, date: new Date().toISOString()}] : []
+  };
+
+  const ads = DB.ads;
+  ads.push(ad);
+  DB.ads = ads;
+
+  toast('✅ অ্যাড সফলভাবে সেভ হয়েছে!');
+  resetAddForm();
+  showPage('ads');
+}
+
+function resetAddForm() {
+  ['f-client','f-campaign','f-days','f-daily','f-rate','f-note'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-fee').value = '0';
+  document.getElementById('f-paid').value = '0';
+  document.getElementById('f-end').value = '';
+  document.getElementById('calc-total').textContent = '—';
+  document.getElementById('calc-usd').textContent = '—';
+  document.getElementById('calc-bdt').textContent = '—';
+  document.getElementById('calc-fee').textContent = '—';
+  document.getElementById('calc-prevdue').textContent = '—';
+  document.getElementById('prev-due-notice').innerHTML = '';
+}
+
+function isEnded(endDate) {
+  return endDate && new Date(endDate) < new Date(new Date().toDateString());
+}
+
+function daysLeft(endDate) {
+  const today = new Date(new Date().toDateString());
+  const end = new Date(endDate);
+  const diff = Math.round((end - today) / 86400000);
+  return diff;
+}
+
+// ==================== DASHBOARD ====================
+function renderDashboard() {
+  const ads = DB.ads;
+  // Update status
+  const updatedAds = ads.map(a => ({...a, status: isEnded(a.end) ? 'ended' : 'active'}));
+  DB.ads = updatedAds;
+
+  const totalIncome = updatedAds.reduce((s, a) => s + (a.paidBDT || 0), 0);
+  const totalDue = updatedAds.reduce((s, a) => s + Math.max(0, a.totalBDT - (a.paidBDT || 0)), 0);
+  const activeCount = updatedAds.filter(a => a.status === 'active').length;
+  const totalClients = [...new Set(updatedAds.map(a => a.client))].length;
+
+  document.getElementById('summary-grid').innerHTML = `
+    <div class="summary-card"><div class="s-label">মোট ইনকাম</div><div class="s-value" style="color:var(--accent2)">৳${totalIncome.toFixed(0)}</div></div>
+    <div class="summary-card"><div class="s-label">মোট ডিউ</div><div class="s-value" style="color:var(--danger)">৳${totalDue.toFixed(0)}</div></div>
+    <div class="summary-card"><div class="s-label">সক্রিয় অ্যাড</div><div class="s-value" style="color:var(--primary)">${activeCount}টি</div></div>
+    <div class="summary-card"><div class="s-label">ক্লায়েন্ট</div><div class="s-value" style="color:var(--text)">${totalClients}জন</div></div>
+  `;
+
+  // Notifications
+  let notifHTML = '';
+  updatedAds.filter(a => a.status === 'active').forEach(a => {
+    const left = daysLeft(a.end);
+    if (left === 0) notifHTML += `<div class="notif-banner">🔔 <strong>${a.client}</strong> – "${a.campaign}" আজ শেষ!</div>`;
+    else if (left === 1) notifHTML += `<div class="notif-banner">⏰ <strong>${a.client}</strong> – "${a.campaign}" কাল শেষ হবে!</div>`;
+    else if (left > 0 && left <= 3) notifHTML += `<div class="notif-banner">⚠️ <strong>${a.client}</strong> – "${a.campaign}" ${left} দিন বাকি!</div>`;
+  });
+  document.getElementById('notif-area').innerHTML = notifHTML;
+
+  // Active ads
+  const activeAds = updatedAds.filter(a => a.status === 'active');
+  document.getElementById('active-ads-list').innerHTML = activeAds.length
+    ? activeAds.map(a => adMiniCard(a)).join('')
+    : '<div class="empty-state"><div class="empty-ico">📭</div><p>কোনো সক্রিয় অ্যাড নেই</p></div>';
+
+  // Due
+  const dueAds = updatedAds.filter(a => a.totalBDT > (a.paidBDT || 0));
+  document.getElementById('due-ads-list').innerHTML = dueAds.length
+    ? dueAds.map(a => adMiniCard(a)).join('')
+    : '<div class="empty-state"><div class="empty-ico">✅</div><p>কোনো বকেয়া নেই</p></div>';
+}
+
+function adMiniCard(a) {
+  const due = a.totalBDT - (a.paidBDT || 0);
+  const statusBadge = a.status === 'active' ? '<span class="badge badge-active">সক্রিয়</span>' : '<span class="badge badge-ended">শেষ</span>';
+  const payBadge = due <= 0 ? '<span class="badge badge-paid">পেইড</span>' : (a.paidBDT > 0 ? '<span class="badge badge-partial">পার্শিয়াল</span>' : '<span class="badge badge-due">ডিউ</span>');
+  const left = daysLeft(a.end);
+  return `<div class="ad-item">
+    <div class="ad-item-top">
+      <div><div class="ad-item-name">📢 ${a.campaign}</div><div class="ad-item-client">👤 ${a.client}</div></div>
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">${statusBadge}${payBadge}</div>
+    </div>
+    <div class="ad-item-meta">
+      <span class="meta-chip">🏷️ ${a.type}</span>
+      <span class="meta-chip">📅 ${a.end}</span>
+      ${a.status === 'active' ? `<span class="meta-chip">⏳ ${left >= 0 ? left + ' দিন বাকি' : 'শেষ হয়েছে'}</span>` : ''}
+      <span class="meta-chip">💲 $${a.dailyUSD}/দিন</span>
+    </div>
+    <div class="ad-item-amounts">
+      <div class="amount-block"><div class="amount-label">মোট বিল</div><div class="amount-value">৳${a.totalBDT.toFixed(0)}</div></div>
+      <div class="amount-block"><div class="amount-label">পেইড</div><div class="amount-value green">৳${(a.paidBDT||0).toFixed(0)}</div></div>
+      <div class="amount-block"><div class="amount-label">বকেয়া</div><div class="amount-value ${due > 0 ? 'red' : 'green'}">৳${due.toFixed(0)}</div></div>
+    </div>
+    <div class="ad-item-actions">
+      <button class="btn btn-primary btn-sm" onclick="openPayModal('${a.id}')">💳 পেমেন্ট</button>
+      <button class="btn btn-outline btn-sm" onclick="openBillForAd('${a.id}')">🧾 বিল</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteAd('${a.id}')">🗑️</button>
+    </div>
+  </div>`;
+}
+
+// ==================== ADS LIST ====================
+function renderAds() {
+  const ads = DB.ads;
+  const filterClient = document.getElementById('filter-client')?.value || '';
+  const filterStatus = document.getElementById('filter-status')?.value || '';
+  const filterPay = document.getElementById('filter-pay')?.value || '';
+
+  // Update client filter dropdown
+  const clients = [...new Set(ads.map(a => a.client))];
+  const fc = document.getElementById('filter-client');
+  const prev = fc.value;
+  fc.innerHTML = '<option value="">সব ক্লায়েন্ট</option>' + clients.map(c => `<option value="${c}" ${c===prev?'selected':''}>${c}</option>`).join('');
+
+  let filtered = ads.map(a => ({...a, status: isEnded(a.end) ? 'ended' : 'active'}));
+  if (filterClient) filtered = filtered.filter(a => a.client === filterClient);
+  if (filterStatus) filtered = filtered.filter(a => a.status === filterStatus);
+  if (filterPay) filtered = filtered.filter(a => {
+    const due = a.totalBDT - (a.paidBDT || 0);
+    if (filterPay === 'paid') return due <= 0;
+    if (filterPay === 'due') return due > 0 && (a.paidBDT || 0) === 0;
+    if (filterPay === 'partial') return (a.paidBDT || 0) > 0 && due > 0;
+    return true;
+  });
+
+  const container = document.getElementById('ads-list-container');
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-ico">🔍</div><p>কোনো অ্যাড পাওয়া যায়নি</p></div>';
+    return;
+  }
+  container.innerHTML = filtered.sort((a,b) => b.createdAt?.localeCompare(a.createdAt || '') || 0).map(a => adMiniCard(a)).join('');
+}
+
+// ==================== PAYMENT ====================
+function openPayModal(id) {
+  document.getElementById('pay-ad-id').value = id;
+  document.getElementById('pay-amount').value = '';
+  openModal('pay-modal');
+}
+
+function recordPayment() {
+  const id = document.getElementById('pay-ad-id').value;
+  const amount = parseFloat(document.getElementById('pay-amount').value);
+  const method = document.getElementById('pay-method').value;
+
+  if (!amount || amount <= 0) { toast('❗ সঠিক পরিমাণ দিন', 'warn'); return; }
+
+  const ads = DB.ads;
+  const idx = ads.findIndex(a => a.id === id);
+  if (idx < 0) return;
+
+  ads[idx].paidBDT = (ads[idx].paidBDT || 0) + amount;
+  if (!ads[idx].payments) ads[idx].payments = [];
+  ads[idx].payments.push({ amount, method, date: new Date().toISOString() });
+  DB.ads = ads;
+
+  closeModal('pay-modal');
+  toast('✅ পেমেন্ট রেকর্ড হয়েছে!');
+  renderPage(currentPage);
+}
+
+// ==================== CLIENTS ====================
+function renderClients() {
+  const ads = DB.ads;
+  const clients = [...new Set(ads.map(a => a.client))];
+  const container = document.getElementById('clients-list');
+
+  if (clients.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-ico">👥</div><p>কোনো ক্লায়েন্ট নেই</p></div>';
+    return;
+  }
+
+  container.innerHTML = clients.map(client => {
+    const cAds = ads.filter(a => a.client === client);
+    const totalBilled = cAds.reduce((s, a) => s + a.totalBDT, 0);
+    const totalPaid = cAds.reduce((s, a) => s + (a.paidBDT || 0), 0);
+    const totalDue = totalBilled - totalPaid;
+    const activeCount = cAds.filter(a => !isEnded(a.end)).length;
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div>
+          <div style="font-weight:800;font-size:1rem">👤 ${client}</div>
+          <div style="font-size:0.78rem;color:var(--text3);margin-top:2px">${cAds.length}টি অ্যাড • ${activeCount}টি সক্রিয়</div>
+        </div>
+        ${totalDue > 0 ? '<span class="badge badge-due">বকেয়া আছে</span>' : '<span class="badge badge-paid">ক্লিয়ার</span>'}
+      </div>
+      <div class="info-row"><span class="label">মোট বিল</span><span class="value">৳${totalBilled.toFixed(2)}</span></div>
+      <div class="info-row"><span class="label">মোট পেইড</span><span class="value" style="color:var(--accent2)">৳${totalPaid.toFixed(2)}</span></div>
+      <div class="info-row"><span class="label">বকেয়া</span><span class="value" style="color:${totalDue>0?'var(--danger)':'var(--accent2)'}">৳${totalDue.toFixed(2)}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ==================== DOLLARS ====================
+function openDollarModal() {
+  document.getElementById('d-date').value = new Date().toISOString().split('T')[0];
+  openModal('dollar-modal');
+}
+
+function saveDollar() {
+  const amount = parseFloat(document.getElementById('d-amount').value);
+  const rate = parseFloat(document.getElementById('d-rate').value);
+  const date = document.getElementById('d-date').value;
+  const from = document.getElementById('d-from').value;
+  const method = document.getElementById('d-method').value;
+  const note = document.getElementById('d-note').value;
+
+  if (!amount || !rate || !date) { toast('❗ সব তথ্য দিন', 'warn'); return; }
+
+  const dollars = DB.dollars;
+  dollars.push({ id: Date.now().toString(), amount, rate, date, from, method, note, totalBDT: amount * rate });
+  DB.dollars = dollars;
+
+  closeModal('dollar-modal');
+  toast('✅ ডলার কেনার তথ্য সেভ হয়েছে!');
+  renderDollars();
+}
+
+function renderDollars() {
+  const dollars = DB.dollars;
+  const container = document.getElementById('dollars-list');
+  if (dollars.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-ico">💵</div><p>কোনো ডলার কেনার রেকর্ড নেই</p></div>';
+    return;
+  }
+  const total = dollars.reduce((s, d) => s + d.amount, 0);
+  const totalBDT = dollars.reduce((s, d) => s + d.totalBDT, 0);
+  container.innerHTML = `
+    <div class="card" style="background:var(--primary-light);border-color:var(--primary);margin-bottom:14px;">
+      <div class="info-row"><span class="label">মোট ডলার কিনেছি</span><span class="value" style="color:var(--primary)">$${total.toFixed(2)}</span></div>
+      <div class="info-row"><span class="label">মোট টাকা খরচ</span><span class="value" style="color:var(--primary)">৳${totalBDT.toFixed(2)}</span></div>
+    </div>
+    ${dollars.sort((a,b) => b.date.localeCompare(a.date)).map(d => `
+    <div class="dollar-item">
+      <div class="dollar-icon">💵</div>
+      <div class="dollar-info">
+        <div class="dollar-main">$${d.amount} @ ৳${d.rate}</div>
+        <div class="dollar-sub">📅 ${d.date} • ${d.from || '—'} • ${d.method}${d.note ? ' • '+d.note : ''}</div>
+      </div>
+      <div>
+        <div class="dollar-amount">৳${d.totalBDT.toFixed(0)}</div>
+        <button class="btn btn-danger btn-sm" style="margin-top:4px;" onclick="deleteDollar('${d.id}')">🗑️</button>
+      </div>
+    </div>`).join('')}`;
+}
+
+function deleteDollar(id) {
+  if (!confirm('এই রেকর্ড মুছে ফেলবেন?')) return;
+  DB.dollars = DB.dollars.filter(d => d.id !== id);
+  renderDollars();
+  toast('🗑️ মুছে ফেলা হয়েছে');
+}
+
+// ==================== REPORTS ====================
+function renderReports() {
+  const ads = DB.ads;
+  const dollars = DB.dollars;
+  const refunds = DB.refunds;
+
+  const totalIncome = ads.reduce((s, a) => s + (a.paidBDT || 0), 0);
+  const totalDue = ads.reduce((s, a) => s + Math.max(0, a.totalBDT - (a.paidBDT || 0)), 0);
+  const totalDollarBought = dollars.reduce((s, d) => s + d.amount, 0);
+  const totalRefund = refunds.reduce((s, r) => s + r.amount, 0);
+
+  document.getElementById('report-summary').innerHTML = `
+    <div class="summary-card"><div class="s-label">মোট আয়</div><div class="s-value" style="color:var(--accent2)">৳${totalIncome.toFixed(0)}</div></div>
+    <div class="summary-card"><div class="s-label">মোট বকেয়া</div><div class="s-value" style="color:var(--danger)">৳${totalDue.toFixed(0)}</div></div>
+    <div class="summary-card"><div class="s-label">ডলার কিনেছি</div><div class="s-value" style="color:var(--primary)">$${totalDollarBought.toFixed(0)}</div></div>
+    <div class="summary-card"><div class="s-label">রিফান্ড</div><div class="s-value" style="color:var(--warning)">৳${totalRefund.toFixed(0)}</div></div>
+  `;
+
+  // Per client
+  const clients = [...new Set(ads.map(a => a.client))];
+  document.getElementById('client-report').innerHTML = clients.map(client => {
+    const cAds = ads.filter(a => a.client === client);
+    const billed = cAds.reduce((s, a) => s + a.totalBDT, 0);
+    const paid = cAds.reduce((s, a) => s + (a.paidBDT || 0), 0);
+    const due = billed - paid;
+    return `<div class="info-row">
+      <span class="label">👤 ${client}</span>
+      <span style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:0.78rem;color:var(--accent2);font-weight:600">আয়: ৳${paid.toFixed(0)}</span>
+        ${due > 0 ? `<span style="font-size:0.78rem;color:var(--danger);font-weight:600">ডিউ: ৳${due.toFixed(0)}</span>` : '<span class="badge badge-paid" style="font-size:0.7rem;">ক্লিয়ার</span>'}
+      </span>
+    </div>`;
+  }).join('') || '<div style="color:var(--text3);padding:10px;text-align:center">কোনো ডেটা নেই</div>';
+
+  // Refunds
+  document.getElementById('refund-list').innerHTML = refunds.length
+    ? refunds.map(r => `<div class="info-row">
+        <span class="label">↩️ ${r.client} – ${r.reason || '—'}<br><small style="color:var(--text3)">${r.date}</small></span>
+        <span class="value" style="color:var(--warning)">৳${r.amount.toFixed(0)}</span>
+      </div>`).join('')
+    : '<div style="color:var(--text3);padding:10px;text-align:center">কোনো রিফান্ড নেই</div>';
+}
+
+// ==================== REFUND ====================
+function openRefundModal() {
+  document.getElementById('r-date').value = new Date().toISOString().split('T')[0];
+  openModal('refund-modal');
+}
+function saveRefund() {
+  const client = document.getElementById('r-client').value;
+  const amount = parseFloat(document.getElementById('r-amount').value);
+  const reason = document.getElementById('r-reason').value;
+  const date = document.getElementById('r-date').value;
+  if (!client || !amount || !date) { toast('❗ সব তথ্য দিন', 'warn'); return; }
+  const refunds = DB.refunds;
+  refunds.push({ id: Date.now().toString(), client, amount, reason, date });
+  DB.refunds = refunds;
+  closeModal('refund-modal');
+  toast('✅ রিফান্ড রেকর্ড হয়েছে');
+  renderReports();
+}
+
+// ==================== BILL ====================
+function setupBillPage() {
+  const ads = DB.ads;
+  const clients = [...new Set(ads.map(a => a.client))];
+  const billClient = document.getElementById('bill-client');
+  const prevVal = billClient.value;
+  billClient.innerHTML = '<option value="">-- ক্লায়েন্ট বেছে নিন --</option>' + clients.map(c => `<option value="${c}" ${c===prevVal?'selected':''}>${c}</option>`).join('');
+  updateBillSelect();
+}
+
+function updateBillSelect() {
+  const client = document.getElementById('bill-client').value;
+  const ads = DB.ads.filter(a => a.client === client);
+  const billAd = document.getElementById('bill-ad');
+  billAd.innerHTML = '<option value="">-- অ্যাড বেছে নিন --</option>' + ads.map(a => `<option value="${a.id}">${a.campaign} (${a.end})</option>`).join('');
+}
+
+function openBillForAd(id) {
+  const ad = DB.ads.find(a => a.id === id);
+  if (!ad) return;
+  showPage('bill');
+  setTimeout(() => {
+    document.getElementById('bill-client').value = ad.client;
+    updateBillSelect();
+    document.getElementById('bill-ad').value = id;
+    generateBill();
+  }, 100);
+}
+
+let currentBillText = '';
+
+function generateBill() {
+  const adId = document.getElementById('bill-ad').value;
+  if (!adId) { toast('❗ একটি অ্যাড বেছে নিন', 'warn'); return; }
+  const ad = DB.ads.find(a => a.id === adId);
+  if (!ad) return;
+
+  const due = ad.totalBDT - (ad.paidBDT || 0);
+  const payStatus = due <= 0 ? 'পেইড ✅' : (ad.paidBDT > 0 ? 'পার্শিয়াল ⚠️' : 'ডিউ ❌');
+
+  const billDate = new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  document.getElementById('bill-preview-area').innerHTML = `
+  <div class="bill-preview" id="bill-content">
+    <div class="bill-header">
+      <div class="bill-title">🧾 ফেসবুক অ্যাড বিল</div>
+      <div class="bill-sub">তারিখ: ${billDate}</div>
+    </div>
+    <table class="bill-table">
+      <tr><th colspan="2">ক্লায়েন্ট তথ্য</th></tr>
+      <tr><td>👤 ক্লায়েন্ট</td><td><strong>${ad.client}</strong></td></tr>
+      <tr><td>📢 ক্যাম্পেইন</td><td>${ad.campaign}</td></tr>
+      <tr><td>🏷️ ধরন</td><td>${ad.type}</td></tr>
+      <tr><td>📅 শুরু</td><td>${ad.start}</td></tr>
+      <tr><td>📅 শেষ</td><td>${ad.end}</td></tr>
+      <tr><td>⏳ মেয়াদ</td><td>${ad.days} দিন</td></tr>
+    </table>
+    <table class="bill-table">
+      <tr><th colspan="2">হিসাব বিবরণ</th></tr>
+      <tr><td>💲 পার ডে বাজেট</td><td>$${ad.dailyUSD}</td></tr>
+      <tr><td>💱 ডলার রেট</td><td>৳${ad.rate}</td></tr>
+      <tr><td>📊 মোট ডলার</td><td>$${ad.totalUSD?.toFixed(2)}</td></tr>
+      <tr><td>💰 মোট টাকা</td><td>৳${(ad.totalUSD * ad.rate).toFixed(2)}</td></tr>
+      ${ad.feePercent > 0 ? `<tr><td>📱 মোবাইল ব্যাংকিং ফী (${ad.feePercent}%)</td><td>৳${(ad.totalUSD * ad.rate * ad.feePercent / 100).toFixed(2)}</td></tr>` : ''}
+      ${ad.prevDueIncluded > 0 ? `<tr><td>⚠️ আগের বকেয়া</td><td>৳${ad.prevDueIncluded.toFixed(2)}</td></tr>` : ''}
+      <tr><td>💳 পেমেন্ট পদ্ধতি</td><td>${ad.payMethod}</td></tr>
+    </table>
+    <div class="bill-total">মোট বিল: ৳${ad.totalBDT.toFixed(2)}</div>
+    <table class="bill-table" style="margin-top:8px">
+      <tr><td>✅ পেইড</td><td><strong style="color:#16a34a">৳${(ad.paidBDT||0).toFixed(2)}</strong></td></tr>
+      <tr><td>❌ বকেয়া</td><td><strong style="color:${due>0?'#dc2626':'#16a34a'}">৳${due.toFixed(2)}</strong></td></tr>
+      <tr><td>স্ট্যাটাস</td><td><strong>${payStatus}</strong></td></tr>
+    </table>
+    ${ad.note ? `<div style="margin-top:12px;padding:10px;background:#f8fafc;border-radius:8px;font-size:0.82rem;color:var(--text2)">📝 নোট: ${ad.note}</div>` : ''}
+    <div style="text-align:center;margin-top:16px;font-size:0.78rem;color:var(--text3)">ধন্যবাদ আপনার ব্যবসার জন্য 🙏</div>
+  </div>`;
+
+  // Generate text version for sharing
+  currentBillText = `🧾 *ফেসবুক অ্যাড বিল*
+📅 তারিখ: ${billDate}
+
+👤 ক্লায়েন্ট: ${ad.client}
+📢 ক্যাম্পেইন: ${ad.campaign}
+🏷️ ধরন: ${ad.type}
+📅 মেয়াদ: ${ad.start} থেকে ${ad.end} (${ad.days} দিন)
+
+━━━━━━━━━━━━━━━━━━
+💲 পার ডে: $${ad.dailyUSD}
+💱 ডলার রেট: ৳${ad.rate}
+📊 মোট ডলার: $${ad.totalUSD?.toFixed(2)}
+💰 মোট টাকা: ৳${(ad.totalUSD * ad.rate).toFixed(2)}
+${ad.feePercent > 0 ? `📱 মোবাইল ফী (${ad.feePercent}%): ৳${(ad.totalUSD * ad.rate * ad.feePercent / 100).toFixed(2)}\n` : ''}${ad.prevDueIncluded > 0 ? `⚠️ আগের বকেয়া: ৳${ad.prevDueIncluded.toFixed(2)}\n` : ''}━━━━━━━━━━━━━━━━━━
+💵 *মোট বিল: ৳${ad.totalBDT.toFixed(2)}*
+✅ পেইড: ৳${(ad.paidBDT||0).toFixed(2)}
+❌ বকেয়া: ৳${due.toFixed(2)}
+📊 স্ট্যাটাস: ${payStatus}
+💳 পেমেন্ট পদ্ধতি: ${ad.payMethod}
+${ad.note ? `\n📝 নোট: ${ad.note}` : ''}
+ধন্যবাদ 🙏`;
+
+  toast('✅ বিল তৈরি হয়েছে!');
+}
+
+function shareBill(platform) {
+  if (!currentBillText) { toast('❗ আগে বিল তৈরি করুন', 'warn'); return; }
+  const encoded = encodeURIComponent(currentBillText);
+  if (platform === 'whatsapp') window.open(`https://wa.me/?text=${encoded}`, '_blank');
+  else if (platform === 'messenger') {
+    navigator.clipboard.writeText(currentBillText).then(() => {
+      toast('📋 টেক্সট কপি হয়েছে! Messenger-এ পেস্ট করুন');
+      window.open('https://m.me/', '_blank');
+    });
+  }
+}
+
+function copyBill() {
+  if (!currentBillText) { toast('❗ আগে বিল তৈরি করুন', 'warn'); return; }
+  navigator.clipboard.writeText(currentBillText).then(() => toast('📋 বিল কপি হয়েছে!'));
+}
+
+// ==================== DELETE AD ====================
+function deleteAd(id) {
+  if (!confirm('এই অ্যাড মুছে ফেলবেন?')) return;
+  DB.ads = DB.ads.filter(a => a.id !== id);
+  toast('🗑️ অ্যাড মুছে ফেলা হয়েছে');
+  renderPage(currentPage);
+}
+
+// ==================== MODALS ====================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+// ==================== TOAST ====================
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  t.appendChild(el);
+  setTimeout(() => el.remove(), 2800);
+}
+
+// ==================== NOTIFICATIONS (periodic) ====================
+function checkNotifications() {
+  const ads = DB.ads;
+  ads.filter(a => a.status === 'active' || !isEnded(a.end)).forEach(a => {
+    const left = daysLeft(a.end);
+    if (left === 0 && 'Notification' in window && Notification.permission === 'granted') {
+      new Notification(`⏰ অ্যাড শেষ!`, { body: `${a.client} – "${a.campaign}" আজ শেষ হচ্ছে!` });
+    }
+  });
+}
+
+// Request notification permission
+if ('Notification' in window && Notification.permission === 'default') {
+  Notification.requestPermission();
+}
+
+// ==================== PWA MANIFEST ====================
+const manifest = {
+  name: "AdBill – ফেসবুক অ্যাড বিলিং",
+  short_name: "AdBill",
+  start_url: ".",
+  display: "standalone",
+  background_color: "#f0f4ff",
+  theme_color: "#3d5af1",
+  icons: [{src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%233d5af1'/><text y='.9em' font-size='80' x='10'>📊</text></svg>", sizes: "192x192", type: "image/svg+xml"}]
+};
+const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+document.getElementById('manifest-link').href = URL.createObjectURL(blob);
+
+// ==================== INIT ====================
+renderDashboard();
+setInterval(checkNotifications, 60000);
+</script>
+</body>
+</html>
